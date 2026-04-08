@@ -420,16 +420,56 @@
       padding: 1.5rem;
     }
     #lightbox.open { display: flex; }
+    #lightbox-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
     #lightbox img {
-      max-width: 100%; max-height: 90vh;
+      max-width: 90vw; max-height: 80vh;
       border-radius: 10px;
       box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      transition: transform 0.2s ease;
+    }
+    #lightbox-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      background: rgba(255,255,255,0.1);
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+    }
+    .zoom-btn {
+      background: none;
+      border: 1px solid white;
+      color: white;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .zoom-btn:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--sky);
+      color: var(--sky);
+    }
+    .zoom-level {
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 600;
+      min-width: 50px;
+      text-align: center;
     }
     #lightbox-close {
       position: absolute; top: 1rem; right: 1.25rem;
       background: none; border: none;
       color: white; font-size: 2rem; cursor: pointer;
-      line-height: 1;
+      line-height: 1; z-index: 10000;
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -490,12 +530,20 @@
   </button>
 
   <!-- ═══════════════════════════════════════════════════════════
-       LIGHTBOX (for ReGainX project board)
+       LIGHTBOX (for ReGainX project board with zoom)
   ═══════════════════════════════════════════════════════════ -->
-  <div id="lightbox" onclick="closeLightbox()">
-    <button id="lightbox-close" onclick="closeLightbox()">×</button>
-    <!-- IMAGE: same src as thumbnail below — update both together -->
-    <img id="lightbox-img" src="images/regainx-board.png" alt="ReGainX Project Board Full Size" />
+  <div id="lightbox" onclick="closeLightbox(event)">
+    <button id="lightbox-close" onclick="closeLightbox(event)">×</button>
+    <div id="lightbox-container" onclick="event.stopPropagation()">
+      <!-- IMAGE: same src as thumbnail below — update both together -->
+      <img id="lightbox-img" src="images/regainx-board.png" alt="ReGainX Project Board Full Size" />
+      <div id="lightbox-controls">
+        <button class="zoom-btn" onclick="zoomLightbox(-0.2)">− Zoom Out</button>
+        <span class="zoom-level" id="zoom-level">100%</span>
+        <button class="zoom-btn" onclick="zoomLightbox(0.2)">+ Zoom In</button>
+        <button class="zoom-btn" onclick="resetZoom()" style="margin-left: 0.5rem;">Reset</button>
+      </div>
+    </div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════
@@ -507,7 +555,7 @@
       <!-- Profile photo — replace images/profile.jpg with your photo path -->
       <div class="avatar-wrap reveal" id="avatar">
         <img
-          src="images/PictureOfMe_ClearBackground.png"
+          src="images/PictureOfMe_ClearBackground.jpg"
           alt="Rohan Bankapur"
           onerror="this.style.display='none'; document.getElementById('avatar-initials').style.display='flex';"
         />
@@ -756,7 +804,7 @@
           </button>
           <div class="accordion-body">
             <div class="accordion-body-inner">
-              <p style="font-size:0.85rem;color:var(--text);line-height:1.6;">Conducting agentic AI and reinforcement learning research in the healthcare space at a local university.</p>
+              <p style="font-size:0.85rem;color:var(--text);line-height:1.6;">Conducting agentic AI and reinforcement learning research in the healthcare space at a local university. Presented literature review to professor on current methodologies and emerging trends in the field.</p>
               <p class="coming-soon">GitHub link coming soon…</p>
             </div>
           </div>
@@ -793,7 +841,7 @@
           </button>
           <div class="accordion-body">
             <div class="accordion-body-inner">
-              <p style="font-size:0.85rem;color:var(--text);line-height:1.6;">Working with a professor on reinforcement learning HVAC optimization systems.</p>
+              <p style="font-size:0.85rem;color:var(--text);line-height:1.6;">Working with a professor on reinforcement learning HVAC optimization systems. Presented literature review to professor detailing state-of-the-art energy management approaches and optimization techniques.</p>
             </div>
           </div>
         </div>
@@ -958,12 +1006,30 @@
     );
     revealEls.forEach(el => observer.observe(el));
 
-    /* ── 4. LIGHTBOX ──────────────────────────────────────────────────────── */
+    /* ── 4. LIGHTBOX with ZOOM ────────────────────────────────────────── */
+    let currentZoom = 1;
+    const minZoom = 0.5;
+    const maxZoom = 3;
+
     function openLightbox() {
       document.getElementById('lightbox').classList.add('open');
+      resetZoom();
     }
-    function closeLightbox() {
+    function closeLightbox(event) {
+      if (event) event.stopPropagation();
       document.getElementById('lightbox').classList.remove('open');
+    }
+    function zoomLightbox(delta) {
+      currentZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom + delta));
+      const img = document.getElementById('lightbox-img');
+      img.style.transform = `scale(${currentZoom})`;
+      document.getElementById('zoom-level').textContent = Math.round(currentZoom * 100) + '%';
+    }
+    function resetZoom() {
+      currentZoom = 1;
+      const img = document.getElementById('lightbox-img');
+      img.style.transform = 'scale(1)';
+      document.getElementById('zoom-level').textContent = '100%';
     }
     // Close lightbox on Escape key
     document.addEventListener('keydown', e => {
