@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rohan Bankapur</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --text: #1f2937;
+      --text-muted: #475569;
+      --border: #d1d5db;
+      --accent: #334155;
+      --accent-soft: #e2e8f0;
+      --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #eef2f7 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 36px 24px 64px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 24px;
+      padding: 32px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 32px;
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .profile {
+      width: 128px;
+      min-width: 128px;
+      height: 128px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .profile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-copy {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 3vw, 3.25rem);
+      letter-spacing: -0.03em;
+    }
+
+    p.lead {
+      margin: 14px 0 0;
+      color: var(--text-muted);
+      max-width: 680px;
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .skills li {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .contact a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    details {
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 22px 24px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      list-style: none;
+      position: relative;
+      color: var(--accent);
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary:after {
+      content: "+";
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    details[open] summary:after {
+      content: "–";
+    }
+
+    .section-content {
+      padding: 0 24px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .section-content h2 {
+      margin-top: 0;
+      color: var(--text);
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .section-content ul,
+    .section-content li {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .section-content li {
+      margin-bottom: 12px;
+    }
+
+    .project-block {
+      display: grid;
+      gap: 16px;
+    }
+
+    .project-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0 0 8px;
+      color: var(--text);
+    }
+
+    .project-meta {
+      color: var(--accent);
+      font-size: 0.96rem;
+      margin-bottom: 10px;
+    }
+
+    .project-details {
+      padding-left: 0;
+    }
+
+    .project-details li {
+      margin-bottom: 8px;
+      padding-left: 1.2rem;
+      text-indent: -1.2rem;
+    }
+
+    .project-details li:before {
+      content: "•";
+      color: var(--accent);
+      display: inline-block;
+      width: 1rem;
+      margin-right: 4px;
+    }
+
+    .project-embed {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      min-height: 260px;
+    }
+
+    .project-embed object {
+      width: 100%;
+      height: 260px;
+      display: block;
+    }
+
+    .project-embed a {
+      display: inline-block;
+      margin-top: 12px;
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    a.inline-link {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px dashed #94a3b8;
+    }
+
+    @media (max-width: 720px) {
+      .hero {
+        padding: 24px;
+      }
+      .hero-top {
+        justify-content: center;
+      }
+      .hero-copy {
+        text-align: center;
+      }
+      .contact {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="hero-top">
+        <div class="profile">
+          <img src="images/PictureOfMe_ClearBackground.png" alt="Rohan Bankapur" />
+        </div>
+        <div class="hero-copy">
+          <h1>Rohan Bankapur</h1>
+          <p class="lead">Hello, my name is Rohan Bankapur. I am a high school sophomore in Frisco, TX. I work at the intersection of machine learning, reinforcement learning, and computer vision.</p>
+          <div class="contact">
+            <a href="mailto:rohannb02@gmail.com">rohannb02@gmail.com</a>
+            <a href="tel:4698949878">469-894-9878</a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2 style="margin-bottom: 14px; color: var(--accent);">Core technical areas</h2>
+        <ul class="skills">
+          <li>Python</li>
+          <li>Java</li>
+          <li>C++</li>
+          <li>TensorFlow</li>
+          <li>Keras</li>
+          <li>PyTorch</li>
+          <li>OpenCV</li>
+          <li>Stable-Baselines3</li>
+          <li>Ray RLlib</li>
+          <li>MuJoCo</li>
+          <li>Scikit-learn</li>
+          <li>NumPy</li>
+          <li>Pandas</li>
+          <li>Matplotlib</li>
+          <li>Seaborn</li>
+        </ul>
+      </div>
+    </section>
+
+    <details open>
+      <summary>Technical Skills</summary>
+      <div class="section-content">
+        <p>Experience with machine learning model development, reinforcement learning research, and computer vision systems. Comfortable with data processing, simulation frameworks, and performance visualization.</p>
+        <div class="project-block">
+          <div>
+            <h3 class="project-title">Programming Languages</h3>
+            <p>C++, Java, Python</p>
+          </div>
+          <div>
+            <h3 class="project-title">Platforms &amp; Tools</h3>
+            <p>TensorFlow, Keras, OpenCV, PyTorch, Stable-Baselines3, Ray RLlib, MuJoCo, Scikit-learn, Matplotlib, Seaborn, Pandas, NumPy</p>
+          </div>
+          <div>
+            <h3 class="project-title">Interests</h3>
+            <p>Machine Learning, Agentic AI, Deep Learning, Reinforcement Learning, Computer Vision</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Projects</summary>
+      <div class="section-content">
+        <div class="project-block">
+          <div>
+            <h3 class="project-title">ReGainX</h3>
+            <p class="project-meta">Aug 2025 – present</p>
+            <ul class="project-details">
+              <li>Created a low-cost, daily-use adaptive exoskeleton system to mitigate muscle failure in Parkinson’s patients.</li>
+              <li>Implemented MARL training loop with PPO for both patient simulation and exoskeleton control.</li>
+              <li>Worked with MuJoCo, Myosuite, Myoassist, and multimodal EMG + IMU data.</li>
+              <li>Built temporal CNN feature extraction, environment vectorization, Bayesian optimization, and RLHF pipelines.</li>
+              <li>Collaborated with Parkinson’s organizations to recruit patients and plan future testing.</li>
+            </ul>
+            <div class="project-embed">
+              <a href="images/ReGainX%20Project%20Board.pdf" target="_blank" rel="noopener">Open ReGainX Project Board</a>
+              <object data="images/ReGainX%20Project%20Board.pdf" type="application/pdf">
+                <p style="padding: 18px; color: var(--text);">PDF preview unavailable. <a href="images/ReGainX%20Project%20Board.pdf" target="_blank" rel="noopener" class="inline-link">Open the ReGainX project board</a>.</p>
+              </object>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="project-title">BrainPilot</h3>
+            <p class="project-meta">May 2025</p>
+            <ul class="project-details">
+              <li>Preprocessed 3D MRI scans and vessel masks for cerebral target localization.</li>
+              <li>Built a hybrid DQN + 3D CNN agent to navigate 3D MRI and locate 14 structures.</li>
+              <li>Presented this work to peers and mentors, placing 4th.</li>
+              <li>Published in UTD HS Research: <a href="https://utdallas.app.box.com/v/hs-research-2025/file/1943119878615" class="inline-link" target="_blank" rel="noopener">research publication</a>.</li>
+              <li>GitHub: <a href="https://github.com/Ok-ok-ok/BrainRL/tree/Ok" class="inline-link" target="_blank" rel="noopener">github.com/Ok-ok-ok/BrainRL/tree/Ok</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="project-title">Benchmarking Reinforcement Learning Algorithms</h3>
+            <p class="project-meta">Nov 2025 – present</p>
+            <ul class="project-details">
+              <li>Compared PPO, DQN, SAC, and TD3 in strategy game environments using Stable-Baselines3.</li>
+              <li>Built strategic environments including Pokémon Showdown and PettingZoo tasks.</li>
+              <li>Designed training and evaluation pipelines to compare performance across environments.</li>
+              <li>Conducted hyperparameter tuning and visualized learning curves with TensorBoard.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Research Experience</summary>
+      <div class="section-content">
+        <ul>
+          <li><strong>University of Texas Southwestern Lab</strong> — Agentic AI and RL research in healthcare.</li>
+          <li><strong>MIT Deliberatorium</strong> — Beginning work on answer clustering with machine learning.</li>
+          <li><strong>Penn State</strong> — Reinforcement learning HVAC optimization systems.</li>
+          <li><strong>Southern Methodist University CDHAM Lab</strong> — Robotics lab research.</li>
+          <li><strong>University of Texas Dallas EACAS Lab</strong> — Efficient machine learning research.</li>
+        </ul>
+        <p style="margin-top: 16px; color: var(--text);">Additional links and GitHub references will be added as new work is finalized.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Additional Experience</summary>
+      <div class="section-content">
+        <ul>
+          <li><strong>Team policy debate:</strong> built collaboration, research, and presentation skills working in a two-person team.</li>
+          <li>Participated in ASDA Nationals and earned NSDA Degree of Honor recognition.</li>
+        </ul>
+      </div>
+    </details>
+  </main>
+</body>
+</html>
