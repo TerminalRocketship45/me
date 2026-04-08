@@ -432,6 +432,10 @@
       border-radius: 10px;
       box-shadow: 0 8px 40px rgba(0,0,0,0.5);
       transition: transform 0.2s ease;
+      cursor: grab;
+    }
+    #lightbox img:active {
+      cursor: grabbing;
     }
     #lightbox-controls {
       display: flex;
@@ -1005,31 +1009,95 @@
     );
     revealEls.forEach(el => observer.observe(el));
 
-    /* ── 4. LIGHTBOX with ZOOM ────────────────────────────────────────── */
+    /* ── 4. LIGHTBOX with ZOOM & PAN ──────────────────────────────────────── */
     let currentZoom = 1;
+    let currentPan = { x: 0, y: 0 };
     const minZoom = 0.5;
     const maxZoom = 3;
+    let isDragging = false;
+    let dragStart = { x: 0, y: 0 };
+    let dragOffset = { x: 0, y: 0 };
 
     function openLightbox() {
       document.getElementById('lightbox').classList.add('open');
       resetZoom();
+      const img = document.getElementById('lightbox-img');
+      img.addEventListener('mousedown', startDrag);
+      img.addEventListener('mousemove', handleDrag);
+      img.addEventListener('mouseup', stopDrag);
+      img.addEventListener('mouseleave', stopDrag);
     }
+
     function closeLightbox(event) {
       if (event) event.stopPropagation();
+      const img = document.getElementById('lightbox-img');
+      img.removeEventListener('mousedown', startDrag);
+      img.removeEventListener('mousemove', handleDrag);
+      img.removeEventListener('mouseup', stopDrag);
+      img.removeEventListener('mouseleave', stopDrag);
       document.getElementById('lightbox').classList.remove('open');
     }
-    function zoomLightbox(delta) {
-      currentZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom + delta));
+
+    function startDrag(e) {
+      if (currentZoom <= 1) return; // Only allow dragging when zoomed in
+      isDragging = true;
+      dragStart = { x: e.clientX, y: e.clientY };
+      dragOffset = { x: 0, y: 0 };
+    }
+
+    function handleDrag(e) {
+      if (!isDragging || currentZoom <= 1) return;
+      dragOffset = {
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      };
+      updateImageTransform();
+    }
+
+    function stopDrag() {
+      if (!isDragging) return;
+      isDragging = false;
+      // Apply the drag offset to pan
+      currentPan.x += dragOffset.x;
+      currentPan.y += dragOffset.y;
+      // Constrain pan to reasonable bounds
+      const maxPan = 150 * (currentZoom - 1);
+      currentPan.x = Math.max(-maxPan, Math.min(maxPan, currentPan.x));
+      currentPan.y = Math.max(-maxPan, Math.min(maxPan, currentPan.y));
+      dragOffset = { x: 0, y: 0 };
+      updateImageTransform();
+    }
+
+    function updateImageTransform() {
       const img = document.getElementById('lightbox-img');
-      img.style.transform = `scale(${currentZoom})`;
+      const translateX = currentPan.x + dragOffset.x;
+      const translateY = currentPan.y + dragOffset.y;
+      img.style.transform = `scale(${currentZoom}) translate(${translateX}px, ${translateY}px)`;
+    }
+
+    function zoomLightbox(delta) {
+      const oldZoom = currentZoom;
+      currentZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom + delta));
+      
+      // Reset pan when zooming back to 1x
+      if (currentZoom <= 1) {
+        currentPan = { x: 0, y: 0 };
+        dragOffset = { x: 0, y: 0 };
+      }
+      
+      updateImageTransform();
       document.getElementById('zoom-level').textContent = Math.round(currentZoom * 100) + '%';
     }
+
     function resetZoom() {
       currentZoom = 1;
+      currentPan = { x: 0, y: 0 };
+      dragOffset = { x: 0, y: 0 };
       const img = document.getElementById('lightbox-img');
-      img.style.transform = 'scale(1)';
+      img.style.transform = 'scale(1) translate(0px, 0px)';
       document.getElementById('zoom-level').textContent = '100%';
     }
+
     // Close lightbox on Escape key
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeLightbox();
