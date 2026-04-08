@@ -4,394 +4,975 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rohan Bankapur</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
   <style>
+    /* ═══════════════════════════════════════════════════════════
+       CSS VARIABLES — Light mode (default)
+       To change accent color: edit all --sky-* values below.
+       To change fonts: edit --font-main below.
+    ═══════════════════════════════════════════════════════════ */
     :root {
-      color-scheme: light;
-      --bg: #f3f4f6;
-      --card: #ffffff;
-      --text: #1f2937;
-      --text-muted: #475569;
-      --border: #d1d5db;
-      --accent: #334155;
-      --accent-soft: #e2e8f0;
-      --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
-      --radius: 22px;
+      --font-main: 'Inter', sans-serif;
+
+      /* Backgrounds & surfaces */
+      --bg:          #f9f9f9;
+      --surface:     #ffffff;
+      --surface-2:   #f2f2f2;
+
+      /* Text */
+      --text:        #141414;
+      --text-muted:  #6b6b6b;
+
+      /* Borders */
+      --border:      #e2e2e2;
+
+      /* Sky-blue accent — change these 3 to retheme the accent color */
+      --sky:         #0ea5e9;   /* main accent (labels, icons, dots) */
+      --sky-light:   #e0f2fe;   /* pill backgrounds, hover tints */
+      --sky-dark:    #075985;   /* dark text on light sky bg */
+
+      /* Toggle button */
+      --toggle-bg:   #ffffff;
+      --toggle-border: #d1d5db;
+      --toggle-text: #4b5563;
     }
 
-    * {
-      box-sizing: border-box;
+    /* ═══════════════════════════════════════════════════════════
+       CSS VARIABLES — Dark mode
+       Applied when <html> has class="dark"
+    ═══════════════════════════════════════════════════════════ */
+    html.dark {
+      --bg:          #0d1117;
+      --surface:     #161b22;
+      --surface-2:   #1c2230;
+
+      --text:        #eaeaea;
+      --text-muted:  #8b949e;
+
+      --border:      #30363d;
+
+      --sky:         #38bdf8;
+      --sky-light:   #0c2a3a;
+      --sky-dark:    #7dd3fc;
+
+      --toggle-bg:   #1c2230;
+      --toggle-border: #30363d;
+      --toggle-text: #7dd3fc;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      margin: 0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #eef2f7 0%, var(--bg) 100%);
+      font-family: var(--font-main);
+      background: var(--bg);
       color: var(--text);
       line-height: 1.6;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    main {
-      max-width: 980px;
+    a {
+      color: var(--sky);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.75; }
+
+    /* ═══════════════════════════════════════════════════════════
+       SCROLL-REVEAL ANIMATION
+       Elements start invisible + shifted down.
+       JS adds class .visible when they enter the viewport.
+    ═══════════════════════════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Stagger siblings by delay classes */
+    .delay-1 { transition-delay: 80ms;  }
+    .delay-2 { transition-delay: 160ms; }
+    .delay-3 { transition-delay: 240ms; }
+
+    /* ═══════════════════════════════════════════════════════════
+       LAYOUT WRAPPER
+    ═══════════════════════════════════════════════════════════ */
+    .container {
+      max-width: 700px;
       margin: 0 auto;
-      padding: 36px 24px 64px;
+      padding: 0 1.5rem;
     }
 
-    .hero {
-      display: grid;
-      gap: 24px;
-      padding: 32px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      margin-bottom: 32px;
-    }
-
-    .hero-top {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 24px;
+    /* ═══════════════════════════════════════════════════════════
+       DARK MODE TOGGLE — fixed top-right
+    ═══════════════════════════════════════════════════════════ */
+    #theme-toggle {
+      position: fixed;
+      top: 1.1rem;
+      right: 1.1rem;
+      z-index: 999;
+      display: inline-flex;
       align-items: center;
-    }
-
-    .profile {
-      width: 128px;
-      min-width: 128px;
-      height: 128px;
-      border-radius: 24px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: #fff;
-    }
-
-    .profile img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .hero-copy {
-      flex: 1;
-      min-width: 220px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2rem, 3vw, 3.25rem);
-      letter-spacing: -0.03em;
-    }
-
-    p.lead {
-      margin: 14px 0 0;
-      color: var(--text-muted);
-      max-width: 680px;
-    }
-
-    .skills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .skills li {
-      padding: 10px 14px;
+      gap: 0.4rem;
+      padding: 0.4rem 0.85rem;
       border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-size: 0.92rem;
-      font-weight: 600;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      font-family: var(--font-main);
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    #theme-toggle:hover { opacity: 0.85; }
+    #theme-toggle svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ═══════════════════════════════════════════════════════════
+       HERO SECTION
+    ═══════════════════════════════════════════════════════════ */
+    #hero {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 1.5rem 4rem;
     }
 
-    .contact {
+    /* ── Profile photo ──────────────────────────────────────────
+       IMAGE: Replace "images/profile.jpg" with your actual photo path.
+       Recommended: square crop, at least 200×200px.
+       If the file is missing the initials fallback "RB" is shown.
+    ──────────────────────────────────────────────────────────── */
+    .avatar-wrap {
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--sky-light);
+      box-shadow: 0 0 0 4px var(--sky-light), 0 4px 16px rgba(14,165,233,0.12);
+      margin: 0 auto 1.75rem;
+      background: var(--surface-2);
+      transition: box-shadow 0.3s;
+    }
+    .avatar-wrap img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .avatar-initials {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.75rem; font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    h1.name {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    .tagline {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin: 0 auto 2rem;
+    }
+
+    /* Contact pills row */
+    .pills {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 18px;
+      gap: 0.6rem;
+      justify-content: center;
     }
-
-    .contact a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    details {
-      margin-bottom: 20px;
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 500;
       border: 1px solid var(--border);
-      border-radius: 18px;
-      background: var(--card);
-      box-shadow: var(--shadow);
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
     }
-
-    summary {
-      cursor: pointer;
-      padding: 22px 24px;
-      font-size: 1.02rem;
-      font-weight: 700;
-      list-style: none;
-      position: relative;
-      color: var(--accent);
+    .pill:hover {
+      background: var(--sky-light);
+      border-color: var(--sky);
+      color: var(--sky-dark);
     }
+    .pill svg { width: 14px; height: 14px; flex-shrink: 0; }
 
-    summary::-webkit-details-marker {
-      display: none;
-    }
-
-    summary:after {
-      content: "+";
-      position: absolute;
-      right: 24px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.5rem;
-      color: var(--text-muted);
-    }
-
-    details[open] summary:after {
-      content: "–";
-    }
-
-    .section-content {
-      padding: 0 24px 24px;
+    /* ═══════════════════════════════════════════════════════════
+       SECTION WRAPPERS
+    ═══════════════════════════════════════════════════════════ */
+    section {
+      padding: 3.5rem 1.5rem;
       border-top: 1px solid var(--border);
-      color: var(--text-muted);
     }
 
-    .section-content h2 {
-      margin-top: 0;
-      color: var(--text);
-      font-size: 1rem;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
-
-    .section-content ul,
-    .section-content li {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .section-content li {
-      margin-bottom: 12px;
-    }
-
-    .project-block {
-      display: grid;
-      gap: 16px;
-    }
-
-    .project-title {
-      font-size: 1rem;
-      font-weight: 700;
-      margin: 0 0 8px;
-      color: var(--text);
-    }
-
-    .project-meta {
-      color: var(--accent);
-      font-size: 0.96rem;
-      margin-bottom: 10px;
-    }
-
-    .project-details {
-      padding-left: 0;
-    }
-
-    .project-details li {
-      margin-bottom: 8px;
-      padding-left: 1.2rem;
-      text-indent: -1.2rem;
-    }
-
-    .project-details li:before {
-      content: "•";
-      color: var(--accent);
-      display: inline-block;
-      width: 1rem;
-      margin-right: 4px;
-    }
-
-    .project-embed {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      min-height: 260px;
-    }
-
-    .project-embed object {
-      width: 100%;
-      height: 260px;
-      display: block;
-    }
-
-    .project-embed a {
-      display: inline-block;
-      margin-top: 12px;
-      color: var(--accent);
+    /* Section label (small all-caps above content) */
+    .section-label {
+      font-size: 0.68rem;
       font-weight: 600;
-      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--sky);
+      margin-bottom: 1.75rem;
     }
 
-    a.inline-link {
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px dashed #94a3b8;
+    /* ═══════════════════════════════════════════════════════════
+       SKILLS SECTION
+    ═══════════════════════════════════════════════════════════ */
+    .skill-group { margin-bottom: 1.25rem; }
+
+    .skill-group-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+    .skill-group-label svg { width: 15px; height: 15px; color: var(--sky); }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+
+    .tag {
+      padding: 0.22rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    /* Blue accent for "Interests" tags */
+    .tag.accent {
+      background: var(--sky-light);
+      color: var(--sky-dark);
+      border-color: transparent;
+    }
+    html.dark .tag.accent { color: var(--sky); }
+
+    /* ═══════════════════════════════════════════════════════════
+       ACCORDION (Projects / Research / Extracurriculars)
+    ═══════════════════════════════════════════════════════════ */
+    .accordion { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .accordion-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .accordion-item:hover { border-color: var(--sky); }
+
+    /* The clickable header row */
+    .accordion-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      gap: 1rem;
+      transition: background 0.2s;
+    }
+    .accordion-header:hover { background: var(--surface-2); }
+
+    .accordion-title { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+    .accordion-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+    /* Chevron icon */
+    .chevron {
+      flex-shrink: 0;
+      width: 16px; height: 16px;
+      color: var(--text-muted);
+      transition: transform 0.3s ease;
+    }
+    .accordion-item.open .chevron { transform: rotate(180deg); }
+
+    /* Collapsible body */
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+      background: var(--surface);
+    }
+    .accordion-item.open .accordion-body { max-height: 1000px; }
+
+    .accordion-body-inner { padding: 0 1.25rem 1.25rem; }
+
+    /* Bullet list inside accordion */
+    .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .bullet-list li { display: flex; gap: 0.5rem; font-size: 0.85rem; color: var(--text); line-height: 1.55; }
+    .bullet-dot { color: var(--sky); flex-shrink: 0; margin-top: 0.55rem; font-size: 1rem; line-height: 1; }
+
+    /* Links inside accordion */
+    .accordion-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.83rem;
+      color: var(--sky);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      margin-top: 0.85rem;
+    }
+    .accordion-link svg { width: 12px; height: 12px; }
+
+    /* "Coming soon" italic note */
+    .coming-soon {
+      font-size: 0.75rem;
+      color: var(--sky);
+      font-style: italic;
+      margin-top: 0.6rem;
     }
 
-    @media (max-width: 720px) {
-      .hero {
-        padding: 24px;
-      }
-      .hero-top {
-        justify-content: center;
-      }
-      .hero-copy {
-        text-align: center;
-      }
-      .contact {
-        justify-content: center;
-      }
+    /* ═══════════════════════════════════════════════════════════
+       PROJECT BOARD IMAGE (ReGainX)
+       IMAGE: Replace "images/regainx-board.jpg" with your actual path.
+       Clicking the thumbnail opens a full-size lightbox overlay.
+    ═══════════════════════════════════════════════════════════ */
+    .project-img-wrap {
+      margin-top: 1.1rem;
+      position: relative;
+      display: inline-block;
+      max-width: 420px;
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--sky);
+      cursor: zoom-in;
+    }
+    .project-img-wrap img {
+      width: 100%; height: 180px; object-fit: cover; display: block;
+    }
+    .project-img-wrap .img-overlay {
+      position: absolute; inset: 0;
+      background: rgba(14,165,233,0);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .project-img-wrap:hover .img-overlay { background: rgba(14,165,233,0.1); }
+    .project-img-wrap .img-overlay svg {
+      width: 28px; height: 28px;
+      color: var(--sky);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .project-img-wrap:hover .img-overlay svg { opacity: 0.8; }
+    .img-caption {
+      position: absolute; bottom: 6px; right: 8px;
+      font-size: 0.65rem;
+      background: rgba(255,255,255,0.8);
+      color: var(--sky-dark);
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+    html.dark .img-caption { background: rgba(0,0,0,0.6); color: var(--sky); }
+
+    /* Placeholder shown when image file not found */
+    .img-placeholder {
+      width: 100%; height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--sky-light);
+      color: var(--sky);
+      font-size: 0.8rem;
+      border: 2px dashed var(--sky);
+      border-radius: 10px;
+      margin-top: 1.1rem;
+    }
+
+    /* ─── Lightbox overlay ─── */
+    #lightbox {
+      display: none;
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.85);
+      align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 100%; max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+    #lightbox-close {
+      position: absolute; top: 1rem; right: 1.25rem;
+      background: none; border: none;
+      color: white; font-size: 2rem; cursor: pointer;
+      line-height: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════════════ */
+    footer {
+      padding: 3.5rem 1.5rem 2.5rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface-2);
+      text-align: center;
+    }
+    .footer-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--sky);
+      margin-bottom: 1.25rem;
+    }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; }
+    .footer-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.85rem; color: var(--text); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--sky); }
+    .footer-link svg { width: 14px; height: 14px; }
+    .footer-divider {
+      width: 40px; height: 2px;
+      background: var(--sky);
+      border-radius: 99px;
+      margin: 1.75rem auto 1.25rem;
+      opacity: 0.5;
+    }
+    .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ═══════════════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════════════ */
+    @media (max-width: 500px) {
+      #theme-toggle { top: 0.75rem; right: 0.75rem; padding: 0.35rem 0.7rem; }
+      section { padding: 2.5rem 1rem; }
     }
   </style>
 </head>
 <body>
-  <main>
-    <section class="hero">
-      <div class="hero-top">
-        <div class="profile">
-          <img src="images/PictureOfMe_ClearBackground.png" alt="Rohan Bankapur" />
+
+  <!-- ═══════════════════════════════════════════════════════════
+       DARK MODE TOGGLE (fixed top-right)
+       JS below handles toggling the "dark" class on <html>
+  ═══════════════════════════════════════════════════════════ -->
+  <button id="theme-toggle" aria-label="Toggle dark mode" onclick="toggleTheme()">
+    <!-- Icon swapped by JS -->
+    <svg id="toggle-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>
+    </svg>
+    <span id="toggle-label">Dark</span>
+  </button>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       LIGHTBOX (for ReGainX project board)
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="lightbox" onclick="closeLightbox()">
+    <button id="lightbox-close" onclick="closeLightbox()">×</button>
+    <!-- IMAGE: same src as thumbnail below — update both together -->
+    <img id="lightbox-img" src="images/regainx-board.jpg" alt="ReGainX Project Board Full Size" />
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       HERO SECTION
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="hero">
+    <div class="container">
+
+      <!-- Profile photo — replace images/profile.jpg with your photo path -->
+      <div class="avatar-wrap reveal" id="avatar">
+        <img
+          src="images/profile.jpg"
+          alt="Rohan Bankapur"
+          onerror="this.style.display='none'; document.getElementById('avatar-initials').style.display='flex';"
+        />
+        <div class="avatar-initials" id="avatar-initials" style="display:none">RB</div>
+      </div>
+
+      <h1 class="name reveal delay-1">Rohan Bankapur</h1>
+
+      <p class="tagline reveal delay-2">
+        High school sophomore in Frisco, TX — building at the intersection of
+        machine learning, reinforcement learning, and healthcare.
+      </p>
+
+      <!-- Contact pills -->
+      <div class="pills reveal delay-3">
+        <a class="pill" href="mailto:rohannb02@gmail.com">
+          <!-- Mail icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          rohannb02@gmail.com
+        </a>
+        <a class="pill" href="tel:4698949878">
+          <!-- Phone icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+          </svg>
+          (469) 894-9878
+        </a>
+        <span class="pill">
+          <!-- Location icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          Frisco, TX
+        </span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       TECHNICAL SKILLS
+       To add/remove skills: edit the tag spans below.
+       "accent" class = sky-blue pill (used for Interests).
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="skills">
+    <div class="container">
+      <p class="section-label reveal">Technical Skills</p>
+
+      <!-- Languages -->
+      <div class="skill-group reveal delay-1">
+        <div class="skill-group-label">
+          <!-- Code icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+          </svg>
+          Languages
         </div>
-        <div class="hero-copy">
-          <h1>Rohan Bankapur</h1>
-          <p class="lead">Hello, my name is Rohan Bankapur. I am a high school sophomore in Frisco, TX. I work at the intersection of machine learning, reinforcement learning, and computer vision.</p>
-          <div class="contact">
-            <a href="mailto:rohannb02@gmail.com">rohannb02@gmail.com</a>
-            <a href="tel:4698949878">469-894-9878</a>
-          </div>
+        <div class="tag-list">
+          <span class="tag">Python</span>
+          <span class="tag">Java</span>
+          <span class="tag">C++</span>
         </div>
       </div>
 
-      <div>
-        <h2 style="margin-bottom: 14px; color: var(--accent);">Core technical areas</h2>
-        <ul class="skills">
-          <li>Python</li>
-          <li>Java</li>
-          <li>C++</li>
-          <li>TensorFlow</li>
-          <li>Keras</li>
-          <li>PyTorch</li>
-          <li>OpenCV</li>
-          <li>Stable-Baselines3</li>
-          <li>Ray RLlib</li>
-          <li>MuJoCo</li>
-          <li>Scikit-learn</li>
-          <li>NumPy</li>
-          <li>Pandas</li>
-          <li>Matplotlib</li>
-          <li>Seaborn</li>
-        </ul>
-      </div>
-    </section>
-
-    <details open>
-      <summary>Technical Skills</summary>
-      <div class="section-content">
-        <p>Experience with machine learning model development, reinforcement learning research, and computer vision systems. Comfortable with data processing, simulation frameworks, and performance visualization.</p>
-        <div class="project-block">
-          <div>
-            <h3 class="project-title">Programming Languages</h3>
-            <p>C++, Java, Python</p>
-          </div>
-          <div>
-            <h3 class="project-title">Platforms &amp; Tools</h3>
-            <p>TensorFlow, Keras, OpenCV, PyTorch, Stable-Baselines3, Ray RLlib, MuJoCo, Scikit-learn, Matplotlib, Seaborn, Pandas, NumPy</p>
-          </div>
-          <div>
-            <h3 class="project-title">Interests</h3>
-            <p>Machine Learning, Agentic AI, Deep Learning, Reinforcement Learning, Computer Vision</p>
-          </div>
+      <!-- Tools & Frameworks -->
+      <div class="skill-group reveal delay-2">
+        <div class="skill-group-label">
+          <!-- Wrench icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          Tools & Frameworks
+        </div>
+        <div class="tag-list">
+          <span class="tag">TensorFlow</span>
+          <span class="tag">Keras</span>
+          <span class="tag">OpenCV</span>
+          <span class="tag">PyTorch</span>
+          <span class="tag">Stable-Baselines3</span>
+          <span class="tag">Ray RLlib</span>
+          <span class="tag">MuJoCo</span>
+          <span class="tag">Scikit-learn</span>
+          <span class="tag">Matplotlib</span>
+          <span class="tag">Seaborn</span>
+          <span class="tag">Pandas</span>
+          <span class="tag">NumPy</span>
         </div>
       </div>
-    </details>
 
-    <details>
-      <summary>Projects</summary>
-      <div class="section-content">
-        <div class="project-block">
-          <div>
-            <h3 class="project-title">ReGainX</h3>
-            <p class="project-meta">Aug 2025 – present</p>
-            <ul class="project-details">
-              <li>Created a low-cost, daily-use adaptive exoskeleton system to mitigate muscle failure in Parkinson’s patients.</li>
-              <li>Implemented MARL training loop with PPO for both patient simulation and exoskeleton control.</li>
-              <li>Worked with MuJoCo, Myosuite, Myoassist, and multimodal EMG + IMU data.</li>
-              <li>Built temporal CNN feature extraction, environment vectorization, Bayesian optimization, and RLHF pipelines.</li>
-              <li>Collaborated with Parkinson’s organizations to recruit patients and plan future testing.</li>
-            </ul>
-            <div class="project-embed">
-              <a href="images/ReGainX%20Project%20Board.pdf" target="_blank" rel="noopener">Open ReGainX Project Board</a>
-              <object data="images/ReGainX%20Project%20Board.pdf" type="application/pdf">
-                <p style="padding: 18px; color: var(--text);">PDF preview unavailable. <a href="images/ReGainX%20Project%20Board.pdf" target="_blank" rel="noopener" class="inline-link">Open the ReGainX project board</a>.</p>
-              </object>
+      <!-- Interests (blue accent pills) -->
+      <div class="skill-group reveal delay-3">
+        <div class="skill-group-label">
+          <!-- Lightbulb icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m1.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+          Interests
+        </div>
+        <div class="tag-list">
+          <span class="tag accent">Machine Learning</span>
+          <span class="tag accent">Agentic AI</span>
+          <span class="tag accent">Deep Learning</span>
+          <span class="tag accent">Reinforcement Learning</span>
+          <span class="tag accent">Computer Vision</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       PROJECTS
+       Each .accordion-item is a collapsible card.
+       To add a project: copy an accordion-item block.
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="projects">
+    <div class="container">
+      <p class="section-label reveal">Projects</p>
+
+      <div class="accordion reveal delay-1">
+
+        <!-- ── ReGainX ──────────────────────────────────────────────────── -->
+        <!-- IMAGE: Add images/regainx-board.jpg (your project board photo) -->
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            <div>
+              <div class="accordion-title">ReGainX</div>
+              <div class="accordion-subtitle">ML-Based Exoskeletons for Parkinson's Disease &mdash; Aug 2025 &ndash; Present</div>
+            </div>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-body-inner">
+              <ul class="bullet-list">
+                <li><span class="bullet-dot">·</span><span>Created a low-cost, daily-use, adaptive set of exoskeletons to mitigate muscle failure in Parkinson's patients</span></li>
+                <li><span class="bullet-dot">·</span><span>Implemented a MARL training loop (PPO to act as PD patient + PPO to control exo)</span></li>
+                <li><span class="bullet-dot">·</span><span>Worked with physics simulators (MuJoCo, Myosuite, Myoassist) and multimodal (EMG + IMU) data</span></li>
+                <li><span class="bullet-dot">·</span><span>Implemented temporal CNN feature extractor, environment vectorization, Bayesian optimization, and RLHF</span></li>
+                <li><span class="bullet-dot">·</span><span>Developed physical Arduino exoskeletons and monitoring mechanisms</span></li>
+                <li><span class="bullet-dot">·</span><span>Receiving feedback from Parkinson's organizations and patients for future testing</span></li>
+              </ul>
+
+              <!-- Project board thumbnail — click opens lightbox -->
+              <div class="project-img-wrap" onclick="openLightbox()" title="Click to expand">
+                <img
+                  src="images/regainx-board.jpg"
+                  alt="ReGainX Project Board"
+                  onerror="this.parentElement.outerHTML='<div class=\'img-placeholder\'>📋 Add images/regainx-board.jpg to display project board</div>'"
+                />
+                <div class="img-overlay">
+                  <!-- Zoom icon -->
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                  </svg>
+                </div>
+                <span class="img-caption">Click to expand</span>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div>
-            <h3 class="project-title">BrainPilot</h3>
-            <p class="project-meta">May 2025</p>
-            <ul class="project-details">
-              <li>Preprocessed 3D MRI scans and vessel masks for cerebral target localization.</li>
-              <li>Built a hybrid DQN + 3D CNN agent to navigate 3D MRI and locate 14 structures.</li>
-              <li>Presented this work to peers and mentors, placing 4th.</li>
-              <li>Published in UTD HS Research: <a href="https://utdallas.app.box.com/v/hs-research-2025/file/1943119878615" class="inline-link" target="_blank" rel="noopener">research publication</a>.</li>
-              <li>GitHub: <a href="https://github.com/Ok-ok-ok/BrainRL/tree/Ok" class="inline-link" target="_blank" rel="noopener">github.com/Ok-ok-ok/BrainRL/tree/Ok</a></li>
-            </ul>
+        <!-- ── BrainPilot ────────────────────────────────────────────────── -->
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            <div>
+              <div class="accordion-title">BrainPilot</div>
+              <div class="accordion-subtitle">Self-Trained Agents for Neurosurgical Planning &mdash; May 2025</div>
+            </div>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-body-inner">
+              <ul class="bullet-list">
+                <li><span class="bullet-dot">·</span><span>Preprocessed 3D MRI scans and vessel masks</span></li>
+                <li><span class="bullet-dot">·</span><span>Created Hybrid AI model (DQN + 3D CNN) to navigate 3D MRI and locate 14 brain structures</span></li>
+                <li><span class="bullet-dot">·</span><span>Presented work to peers and mentors, placing 4th</span></li>
+                <li><span class="bullet-dot">·</span><span>Published in UTD HS Research: <a href="https://utdallas.app.box.com/v/hs-research-2025/file/1943119878615" target="_blank" rel="noopener">View Publication ↗</a></span></li>
+                <li><span class="bullet-dot">·</span><span>Compared PPO, DQN, SAC, and TD3 performance using Stable-Baselines3</span></li>
+              </ul>
+              <a class="accordion-link" href="https://github.com/Ok-ok-ok/BrainRL/tree/Ok" target="_blank" rel="noopener">
+                <!-- GitHub icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                GitHub Repository
+              </a>
+            </div>
           </div>
+        </div>
 
-          <div>
-            <h3 class="project-title">Benchmarking Reinforcement Learning Algorithms</h3>
-            <p class="project-meta">Nov 2025 – present</p>
-            <ul class="project-details">
-              <li>Compared PPO, DQN, SAC, and TD3 in strategy game environments using Stable-Baselines3.</li>
-              <li>Built strategic environments including Pokémon Showdown and PettingZoo tasks.</li>
-              <li>Designed training and evaluation pipelines to compare performance across environments.</li>
-              <li>Conducted hyperparameter tuning and visualized learning curves with TensorBoard.</li>
-            </ul>
+        <!-- ── RL Experiments ────────────────────────────────────────────── -->
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            <div>
+              <div class="accordion-title">Reinforcement Learning Experiments</div>
+              <div class="accordion-subtitle">Multi-Agent RL Across Game Environments</div>
+            </div>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-body-inner">
+              <ul class="bullet-list">
+                <li><span class="bullet-dot">·</span><span>Compared PPO, DQN, SAC, and TD3 performance using Stable-Baselines3</span></li>
+                <li><span class="bullet-dot">·</span><span>Built strategic game environments, including Pokémon Showdown and other PettingZoo tasks</span></li>
+                <li><span class="bullet-dot">·</span><span>Designed training and evaluation pipelines to measure performance across environments</span></li>
+                <li><span class="bullet-dot">·</span><span>Conducted hyperparameter tuning and visualized learning curves using TensorBoard</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.accordion -->
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       RESEARCH
+       To add an entry: copy an accordion-item block.
+       For entries with a GitHub link, add an <a class="accordion-link"> inside.
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="research">
+    <div class="container">
+      <p class="section-label reveal">Research</p>
+
+      <div class="accordion reveal delay-1">
+
+        <!-- UT Southwestern -->
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            <div>
+              <div class="accordion-title">University of Texas Southwestern Lab</div>
+              <div class="accordion-subtitle">Agentic AI &amp; RL Research in Healthcare</div>
+            </div>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-body-inner">
+              <p style="font-size:0.85rem;color:var(--text);line-height:1.6;">Conducting agentic AI and reinforcement learning research in the healthcare space at a local university.</p>
+              <p class="coming-soon">GitHub link coming soon…</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- MIT Deliberatorium -->
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            <div>
+              <div class="accordion-title">MIT Deliberatorium</div>
+              <div class="accordion-subtitle">Answer Clustering with Machine Learning</div>
+            </div>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-body-inner">
+              <p style="font-size:0.85rem;color:var(--text);line-height:1.6;">Beginning work on answer clustering using machine learning techniques.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Penn State -->
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            <div>
+              <div class="accordion-title">Penn State</div>
+              <div class="accordion-subtitle">Reinforcement Learning for HVAC Optimization</div>
+            </div>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-body-inner">
+              <p style="font-size:0.85rem;color:var(--text);line-height:1.6;">Working with a professor on reinforcement learning HVAC optimization systems.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SMU -->
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            <div>
+              <div class="accordion-title">Southern Methodist University — CDHAM Lab</div>
+              <div class="accordion-subtitle">Robotics Research</div>
+            </div>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-body-inner">
+              <p style="font-size:0.85rem;color:var(--text);line-height:1.6;">Beginning work at a robotics lab at a local university.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- UTD EACAS -->
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            <div>
+              <div class="accordion-title">University of Texas Dallas — EACAS Lab</div>
+              <div class="accordion-subtitle">Efficient Machine Learning</div>
+            </div>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-body-inner">
+              <p style="font-size:0.85rem;color:var(--text);line-height:1.6;">Beginning work in efficient machine learning at a local university.</p>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.accordion -->
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       EXTRACURRICULARS
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="extracurriculars">
+    <div class="container">
+      <p class="section-label reveal">Extracurriculars</p>
+
+      <div class="accordion reveal delay-1">
+        <div class="accordion-item">
+          <button class="accordion-header" onclick="toggleAccordion(this)">
+            <div>
+              <div class="accordion-title">Team Policy Debate</div>
+              <div class="accordion-subtitle">ASDA Nationals · NSDA Degree of Honor</div>
+            </div>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-body-inner">
+              <p style="font-size:0.85rem;color:var(--text);line-height:1.6;">
+                Built skills in research, public speaking, and working in a team of two.
+                Achieved recognition at ASDA Nationals and earned an NSDA Degree of Honor.
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </details>
+    </div>
+  </section>
 
-    <details>
-      <summary>Research Experience</summary>
-      <div class="section-content">
-        <ul>
-          <li><strong>University of Texas Southwestern Lab</strong> — Agentic AI and RL research in healthcare.</li>
-          <li><strong>MIT Deliberatorium</strong> — Beginning work on answer clustering with machine learning.</li>
-          <li><strong>Penn State</strong> — Reinforcement learning HVAC optimization systems.</li>
-          <li><strong>Southern Methodist University CDHAM Lab</strong> — Robotics lab research.</li>
-          <li><strong>University of Texas Dallas EACAS Lab</strong> — Efficient machine learning research.</li>
-        </ul>
-        <p style="margin-top: 16px; color: var(--text);">Additional links and GitHub references will be added as new work is finalized.</p>
+  <!-- ═══════════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════════ -->
+  <footer>
+    <div class="container reveal">
+      <p class="footer-label">Get in Touch</p>
+      <div class="footer-links">
+        <a class="footer-link" href="mailto:rohannb02@gmail.com">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          rohannb02@gmail.com
+        </a>
+        <a class="footer-link" href="tel:4698949878">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+          </svg>
+          (469) 894-9878
+        </a>
       </div>
-    </details>
+      <div class="footer-divider"></div>
+      <p class="footer-copy">© <span id="year"></span> Rohan Bankapur</p>
+    </div>
+  </footer>
 
-    <details>
-      <summary>Additional Experience</summary>
-      <div class="section-content">
-        <ul>
-          <li><strong>Team policy debate:</strong> built collaboration, research, and presentation skills working in a two-person team.</li>
-          <li>Participated in ASDA Nationals and earned NSDA Degree of Honor recognition.</li>
-        </ul>
-      </div>
-    </details>
-  </main>
+  <!-- ═══════════════════════════════════════════════════════════
+       JAVASCRIPT
+       Three features:
+         1. Dark / light mode toggle (persisted in localStorage)
+         2. Accordion open/close
+         3. Scroll-reveal (IntersectionObserver on .reveal elements)
+         4. Lightbox for project board image
+  ═══════════════════════════════════════════════════════════ -->
+  <script>
+    /* ── 1. DARK MODE ─────────────────────────────────────────────────────── */
+    const html = document.documentElement;
+    const icon = document.getElementById('toggle-icon');
+    const label = document.getElementById('toggle-label');
+
+    // Moon SVG path (shown in light mode — clicking goes dark)
+    const MOON = 'M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z';
+    // Sun SVG path (shown in dark mode — clicking goes light)
+    const SUN  = 'M12 3v1m0 16v1m8.66-9h-1M4.34 12h-1m15.07-6.07l-.71.71M6.34 17.66l-.71.71m12.73 0l-.71-.71M6.34 6.34l-.71-.71M12 5a7 7 0 100 14A7 7 0 0012 5z';
+
+    function setTheme(dark) {
+      if (dark) {
+        html.classList.add('dark');
+        icon.querySelector('path').setAttribute('d', SUN);
+        label.textContent = 'Light';
+      } else {
+        html.classList.remove('dark');
+        icon.querySelector('path').setAttribute('d', MOON);
+        label.textContent = 'Dark';
+      }
+      localStorage.setItem('portfolio-theme', dark ? 'dark' : 'light');
+    }
+
+    function toggleTheme() {
+      setTheme(!html.classList.contains('dark'));
+    }
+
+    // Init theme from storage or OS preference
+    const saved = localStorage.getItem('portfolio-theme');
+    if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      setTheme(true);
+    }
+
+    /* ── 2. ACCORDION ─────────────────────────────────────────────────────── */
+    function toggleAccordion(btn) {
+      const item = btn.closest('.accordion-item');
+      // Allow multiple open at once — remove this if() to make it exclusive
+      item.classList.toggle('open');
+    }
+
+    /* ── 3. SCROLL REVEAL ─────────────────────────────────────────────────── */
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target); // animate only once
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    revealEls.forEach(el => observer.observe(el));
+
+    /* ── 4. LIGHTBOX ──────────────────────────────────────────────────────── */
+    function openLightbox() {
+      document.getElementById('lightbox').classList.add('open');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+    // Close lightbox on Escape key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    /* ── 5. FOOTER YEAR ───────────────────────────────────────────────────── */
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
 </body>
 </html>
